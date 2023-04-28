@@ -2,7 +2,6 @@ import {
 	AppShell,
 	Header as AppShellHeader,
 	Navbar as AppShellNavbar,
-	ScrollArea,
 } from '@mantine/core'
 import { Outlet } from 'react-router-dom'
 import Header from '../components/Header'
@@ -19,9 +18,7 @@ export default function Root() {
 						height: 'calc(100% - 60px)',
 					})}
 				>
-					<AppShellNavbar.Section grow component={ScrollArea}>
-						<Navbar />
-					</AppShellNavbar.Section>
+					<Navbar />
 				</AppShellNavbar>
 			}
 			header={
