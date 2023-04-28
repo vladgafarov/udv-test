@@ -1,9 +1,9 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { ActionIcon, Box, Flex, Text } from '@mantine/core'
+import { ActionIcon, Box, Flex, Text, createStyles } from '@mantine/core'
 
-const useStyles = createStyles(theme => ({
+const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
-		backgroundColor: theme.colors.gray[2],
+		backgroundColor: current ? theme.colors.gray[2] : theme.colors.indigo[1],
 		borderRadius: theme.radius.sm,
 		maxWidth: 'min-content',
 		minWidth: '160px',
@@ -17,7 +17,7 @@ interface IProps {
 }
 
 export default function Message({ text }: IProps) {
-	const { classes } = useStyles()
+	const { classes } = useStyles({ current: false })
 
 	return (
 		<Box className={classes.root}>
