@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
-import { User, UsersDB } from '../types'
+import { IUser, IUsersDB } from '../types'
 
-const usersDB = openDB<UsersDB>('users', 1, {
+const usersDB = openDB<IUsersDB>('users', 1, {
 	upgrade(db) {
 		db.createObjectStore('users', {
 			keyPath: 'id',
@@ -32,11 +32,10 @@ export async function addUser(username: string) {
 	return db.add('users', {
 		id: uuid,
 		username,
-		chatsIds: [],
 	})
 }
 
-export async function updateUser(user: User) {
+export async function updateUser(user: IUser) {
 	const db = await usersDB
 
 	return db.put('users', user)

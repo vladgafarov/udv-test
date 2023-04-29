@@ -2,24 +2,31 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
-import Root, { action as rootAction } from './routes/root'
+import Root, { action as rootAction, loader as rootLoader } from './routes/root'
 import ErrorPage from './error-page'
-import Chat from './routes/chat'
+import Chat, { loader as chatLoader } from './routes/chat'
 
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Root />,
 		errorElement: <ErrorPage />,
+		loader: rootLoader,
 		action: rootAction,
 		children: [
 			{
-				path: '/chats/:chatId',
-				element: <Chat />,
-			},
-			{
-				index: true,
-				element: <div>Select chat</div>,
+				errorElement: <ErrorPage />,
+				children: [
+					{
+						path: '/chats/:chatId',
+						loader: chatLoader,
+						element: <Chat />,
+					},
+					{
+						index: true,
+						element: <div>Select chat</div>,
+					},
+				],
 			},
 		],
 	},

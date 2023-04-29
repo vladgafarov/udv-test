@@ -1,9 +1,11 @@
 import { ScrollArea, Stack, createStyles } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { LoaderFunctionArgs, useLoaderData, useParams } from 'react-router-dom'
 import ChatInput from '../components/ChatInput'
 import Message from '../components/Message'
+import { getChatById } from '../api/chatsDB'
+import { IChat } from '../types'
 
 const useStyles = createStyles(theme => ({
 	wrapper: {
@@ -17,8 +19,25 @@ const useStyles = createStyles(theme => ({
 	},
 }))
 
+export async function loader({ params }: LoaderFunctionArgs) {
+	const { chatId } = params
+
+	if (!chatId) throw new Error('no chat id')
+
+	const chat = await getChatById(chatId)
+	if (!chat) {
+		throw new Response('', {
+			status: 404,
+			statusText: 'Chat not found',
+		})
+	}
+
+	return { chat }
+}
+
 export default function Chat() {
 	const { chatId } = useParams<{ chatId: string }>()
+	const { chat } = useLoaderData() as { chat: IChat }
 	const { classes } = useStyles()
 
 	const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({

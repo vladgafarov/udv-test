@@ -1,27 +1,35 @@
 import { DBSchema } from 'idb'
 
-export interface User {
+export interface IUser {
 	id: string
 	username: string
-	chatsIds: string[]
 }
 
-export interface Chat {
+export interface IChat {
 	id: string
 	title: string
-	messags: Message[]
+	messages: IMessage[]
 }
 
-export interface Message {
+export interface IMessage {
 	id: string
+	user_id: string
 	text: string
 	createdAt: string
 }
 
-export interface UsersDB extends DBSchema {
+export interface IUsersDB extends DBSchema {
 	users: {
 		key: string
-		value: User
+		value: IUser
 		indexes: { 'by-username': string }
+	}
+}
+
+export interface IChatsDB extends DBSchema {
+	chats: {
+		key: string
+		value: IChat
+		indexes: { 'by-title': string }
 	}
 }
