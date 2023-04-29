@@ -15,6 +15,7 @@ export interface Chat {
 export interface Message {
 	id: string
 	text: string
+	createdAt: string
 }
 
 export interface UsersDB extends DBSchema {
