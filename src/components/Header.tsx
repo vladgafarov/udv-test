@@ -1,22 +1,43 @@
-import { UserCircleIcon } from '@heroicons/react/24/outline'
-import { ActionIcon, Flex, Text, Title } from '@mantine/core'
+import {
+	ArrowLeftOnRectangleIcon,
+	UserCircleIcon,
+} from '@heroicons/react/24/outline'
+import { Flex, Menu, Text, Title } from '@mantine/core'
 import { User } from '../types'
 
 interface IProps {
 	user: User
+	logout: () => void
 }
 
-export default function Header({ user }: IProps) {
+export default function Header({ user, logout }: IProps) {
 	return (
 		<Flex justify={'space-between'} align={'center'} h="100%">
 			<Title order={3}>Chat app</Title>
 
-			<Flex align="center" gap="sm">
-				<Text>{user.username}</Text>
-				<ActionIcon>
-					<UserCircleIcon />
-				</ActionIcon>
-			</Flex>
+			<Menu position="bottom-end">
+				<Menu.Target>
+					<Flex
+						align="center"
+						gap="xs"
+						sx={() => ({
+							cursor: 'pointer',
+						})}
+					>
+						<Text>{user.username}</Text>
+						<UserCircleIcon height={22} />
+					</Flex>
+				</Menu.Target>
+				<Menu.Dropdown>
+					<Menu.Item
+						icon={<ArrowLeftOnRectangleIcon height={16} />}
+						color="red"
+						onClick={logout}
+					>
+						Logout
+					</Menu.Item>
+				</Menu.Dropdown>
+			</Menu>
 		</Flex>
 	)
 }

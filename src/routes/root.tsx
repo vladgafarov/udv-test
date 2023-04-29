@@ -106,7 +106,7 @@ export default function Root() {
 			}
 			header={
 				<AppShellHeader height={60} p="xs">
-					<Header user={user} />
+					<Header user={user} logout={() => setUser(undefined)} />
 				</AppShellHeader>
 			}
 			styles={theme => ({
