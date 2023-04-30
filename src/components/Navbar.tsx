@@ -1,12 +1,7 @@
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { Button, Flex, ScrollArea, Stack, TextInput } from '@mantine/core'
-import { useEffect, useMemo, useState } from 'react'
-import {
-	useLoaderData,
-	useNavigate,
-	useParams,
-	useSearchParams,
-} from 'react-router-dom'
+import { PlusIcon } from '@heroicons/react/20/solid'
+import { Button, Flex, ScrollArea, Stack } from '@mantine/core'
+import { useMemo } from 'react'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 import { IChat } from '../types'
 import ChatLink from './ChatLink'
 
@@ -15,38 +10,23 @@ export default function Navbar() {
 		chats: IChat[]
 	}
 	const navigate = useNavigate()
-	const [searchParams, setSearchParams] = useSearchParams()
-	const { chatId } = useParams()
-	const [value, setValue] = useState('')
 
 	const filteredChats: IChat[] = useMemo(() => {
-		const query = searchParams.get('query')
-
-		if (!query) return chats
-
-		return chats.filter(item => item.title.includes(query))
-	}, [chats, searchParams])
-
-	useEffect(() => {
-		setSearchParams({ query: value })
-	}, [setSearchParams, value])
-
-	useEffect(() => {
-		setValue('')
-	}, [chatId])
+		return chats.sort(
+			(a, b) =>
+				new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+		)
+	}, [chats])
 
 	return (
 		<>
 			<Flex direction={'column'} h="100%">
 				<Flex gap="sm">
-					<TextInput
-						type="search"
-						placeholder="Search chats"
-						icon={<MagnifyingGlassIcon height={16} />}
-						value={value}
-						onChange={e => setValue(e.currentTarget.value)}
-					/>
-					<Button color="indigo.4" onClick={() => navigate(`/chats/new`)}>
+					<Button
+						leftIcon={<PlusIcon height={18} />}
+						color="indigo.4"
+						onClick={() => navigate(`/chats/new`)}
+					>
 						New
 					</Button>
 				</Flex>

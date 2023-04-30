@@ -8,7 +8,7 @@ export interface IUser {
 export interface IChat {
 	id: string
 	title: string
-	messages: IMessage[]
+	createdAt: string
 }
 
 export interface IMessage {

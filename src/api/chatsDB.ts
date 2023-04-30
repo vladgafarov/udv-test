@@ -22,15 +22,9 @@ export async function createChat(title: string) {
 	return db.add('chats', {
 		id: uuid,
 		title,
-		messages: [],
+		createdAt: new Date().toISOString(),
 	})
 }
-
-// export async function updateUser(user: User) {
-// 	const db = await usersDB
-
-// 	return db.put('users', user)
-// }
 
 export async function deleteChat(id: string) {
 	const db = await chatsDB
