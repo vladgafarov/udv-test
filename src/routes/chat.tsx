@@ -32,17 +32,28 @@ export default function Chat() {
 
 	const messagesByDate = useMemo(() => {
 		const messagesByDate = new Map<string, IMessage[]>()
-		messages.forEach(message => {
-			const date = new Date(message.createdAt).toLocaleDateString(
-				undefined,
-				{
-					month: 'long',
-					day: 'numeric',
-				}
+		messages
+			.sort(
+				(a, b) =>
+					new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
 			)
-			const messages = messagesByDate.get(date) || []
-			messagesByDate.set(date, [...messages, message])
-		})
+			.forEach(message => {
+				const date = new Date(message.createdAt).toLocaleDateString(
+					undefined,
+					{
+						month: 'long',
+						day: 'numeric',
+					}
+				)
+				const isToday =
+					date ===
+					new Date().toLocaleDateString(undefined, {
+						month: 'long',
+						day: 'numeric',
+					})
+				const messages = messagesByDate.get(isToday ? 'Today' : date) || []
+				messagesByDate.set(isToday ? 'Today' : date, [...messages, message])
+			})
 		return messagesByDate
 	}, [messages])
 
@@ -50,7 +61,7 @@ export default function Chat() {
 		scrollIntoView({
 			alignment: 'end',
 		})
-	}, [scrollIntoView, chatId])
+	}, [scrollIntoView, chatId, messagesByDate])
 
 	return (
 		<div className={classes.wrapper}>
@@ -62,7 +73,11 @@ export default function Chat() {
 								<Divider
 									label={date}
 									labelPosition="center"
-									sx={() => ({ position: 'sticky' })}
+									sx={theme => ({
+										position: 'sticky',
+										top: 0,
+										color: theme.colors.gray[5],
+									})}
 								/>
 								{messages.map(message => (
 									<Message key={message.id} message={message} />

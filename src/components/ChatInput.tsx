@@ -2,7 +2,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { ActionIcon, Input, TextInput, createStyles } from '@mantine/core'
 import { useFetcher, useOutletContext, useParams } from 'react-router-dom'
 import { IUser } from '../types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const useStyles = createStyles(theme => ({
 	root: {
@@ -29,6 +29,12 @@ export default function ChatInput() {
 	const { user } = useOutletContext() as { user: IUser }
 	const fetcher = useFetcher()
 	const [message, setMessage] = useState<string>('')
+
+	useEffect(() => {
+		if (fetcher.state === 'idle') {
+			setMessage('')
+		}
+	}, [fetcher.state])
 
 	return (
 		<fetcher.Form method="post">
