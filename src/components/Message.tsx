@@ -5,7 +5,7 @@ import { useOutletContext } from 'react-router-dom'
 
 const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
-		backgroundColor: current ? theme.colors.gray[2] : theme.colors.indigo[1],
+		backgroundColor: current ? theme.colors.indigo[1] : theme.colors.gray[2],
 		borderRadius: theme.radius.sm,
 		maxWidth: 'min-content',
 		minWidth: '160px',
