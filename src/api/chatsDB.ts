@@ -39,5 +39,6 @@ export async function deleteChat(id: string) {
 
 export async function getAllChats() {
 	const db = await chatsDB
+
 	return db.getAll('chats')
 }
