@@ -10,7 +10,7 @@ import {
 	createStyles,
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { Form, Outlet, useActionData } from 'react-router-dom'
+import { Form, Outlet, useActionData, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import Navbar from '../components/Navbar'
 import { IUser } from '../types'
@@ -37,6 +37,7 @@ export default function Root() {
 	const { classes } = useStyles()
 	const actionData = useActionData() as { user: IUser } | undefined
 	const [user, setUser] = useState<IUser>()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (actionData?.user) {
@@ -83,7 +84,13 @@ export default function Root() {
 			}
 			header={
 				<AppShellHeader height={60} p="xs">
-					<Header user={user} logout={() => setUser(undefined)} />
+					<Header
+						user={user}
+						logout={() => {
+							setUser(undefined)
+							navigate('/')
+						}}
+					/>
 				</AppShellHeader>
 			}
 			styles={theme => ({
