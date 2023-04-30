@@ -15,6 +15,9 @@ const useStyles = createStyles(theme => ({
 	},
 	scrollArea: {
 		height: `calc(100% - 60px)`,
+		'> div > div': {
+			height: '100%',
+		},
 	},
 }))
 
@@ -66,7 +69,7 @@ export default function Chat() {
 	return (
 		<div className={classes.wrapper}>
 			<ScrollArea className={classes.scrollArea} viewportRef={scrollableRef}>
-				<Stack>
+				<Stack justify="flex-end" h="100%">
 					{[...messagesByDate].map(([date, messages], i) => {
 						return (
 							<Fragment key={i}>

@@ -24,7 +24,7 @@ export default function Message({ message }: IProps) {
 
 	return (
 		<Box className={classes.root}>
-			<Flex justify={'space-between'} align="center">
+			<Flex justify={'space-between'} align="center" gap="xl">
 				<Text size="sm" weight={600}>
 					{message.user.username}
 				</Text>
