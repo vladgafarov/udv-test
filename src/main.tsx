@@ -5,6 +5,7 @@ import { MantineProvider } from '@mantine/core'
 import Root, { action as rootAction, loader as rootLoader } from './routes/root'
 import ErrorPage from './error-page'
 import Chat, { loader as chatLoader } from './routes/chat'
+import NewChat, { action as newChatAction } from './routes/chat/new'
 
 const router = createBrowserRouter([
 	{
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
 						path: '/chats/:chatId',
 						loader: chatLoader,
 						element: <Chat />,
+					},
+					{
+						path: '/chats/new',
+						action: newChatAction,
+						element: <NewChat />,
 					},
 					{
 						index: true,
