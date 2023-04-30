@@ -1,11 +1,17 @@
-import { ScrollArea, Stack, createStyles } from '@mantine/core'
+import { ScrollArea, Stack, Text, createStyles } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { useEffect } from 'react'
-import { LoaderFunctionArgs, useLoaderData, useParams } from 'react-router-dom'
+import {
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
+	useLoaderData,
+	useParams,
+} from 'react-router-dom'
 import ChatInput from '../components/ChatInput'
 import Message from '../components/Message'
 import { getChatById } from '../api/chatsDB'
-import { IChat } from '../types'
+import { IChat, IMessage } from '../types'
+import { createMessage, getMessagesFromChat } from '../api/messagesDB'
 
 const useStyles = createStyles(theme => ({
 	wrapper: {
@@ -32,12 +38,43 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		})
 	}
 
-	return { chat }
+	const messages = await getMessagesFromChat(chat.id)
+
+	return { chat, messages }
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+	const formData = Object.fromEntries(await request.formData()) as {
+		message: string
+		chatId: string
+		userId: string
+		username: string
+	}
+
+	if (
+		!formData.message ||
+		!formData.chatId ||
+		!formData.userId ||
+		!formData.username
+	)
+		throw new Error('cannot create message')
+
+	await createMessage({
+		text: formData.message,
+		chatId: formData.chatId,
+		userId: formData.userId,
+		username: formData.username,
+	})
+
+	return { ok: true }
 }
 
 export default function Chat() {
 	const { chatId } = useParams<{ chatId: string }>()
-	const { chat } = useLoaderData() as { chat: IChat }
+	const { chat, messages } = useLoaderData() as {
+		chat: IChat
+		messages: IMessage[]
+	}
 	const { classes } = useStyles()
 
 	const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
@@ -70,10 +107,11 @@ export default function Chat() {
 		<div className={classes.wrapper}>
 			<ScrollArea className={classes.scrollArea} viewportRef={scrollableRef}>
 				<Stack>
-					{Array.from({ length: 20 }).map((_, i) => (
-						<Message key={i} text={chatId} />
+					{messages.map(message => (
+						<Message key={message.id} message={message} />
 					))}
 
+					{messages.length === 0 ? <Text>No messages</Text> : null}
 					{/* @ts-expect-error ref */}
 					<div ref={targetRef}></div>
 				</Stack>

@@ -14,8 +14,12 @@ export interface IChat {
 export interface IMessage {
 	id: string
 	user_id: string
+	chat_id: string
 	text: string
 	createdAt: string
+	user: {
+		username: string
+	}
 }
 
 export interface IUsersDB extends DBSchema {
@@ -31,5 +35,13 @@ export interface IChatsDB extends DBSchema {
 		key: string
 		value: IChat
 		indexes: { 'by-title': string }
+	}
+}
+
+export interface IMessagesDB extends DBSchema {
+	messages: {
+		key: string
+		value: IMessage
+		indexes: { 'by-chat-id': string }
 	}
 }
