@@ -30,15 +30,15 @@ export default function ChatInput() {
 
 	return (
 		<fetcher.Form method="post">
+			<Input type="hidden" name="chatId" defaultValue={chatId} />
+			<Input type="hidden" name="userId" defaultValue={user.id} />
+			<Input type="hidden" name="username" defaultValue={user.username} />
 			<div className={classes.root}>
 				<TextInput
 					name="message"
 					className={classes.input}
 					autoComplete={'off'}
 				/>
-				<Input type="hidden" name="chatId" defaultValue={chatId} />
-				<Input type="hidden" name="userId" defaultValue={user.id} />
-				<Input type="hidden" name="username" defaultValue={user.username} />
 				<ActionIcon
 					type="submit"
 					variant="filled"

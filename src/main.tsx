@@ -1,11 +1,14 @@
+import { MantineProvider } from '@mantine/core'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { MantineProvider } from '@mantine/core'
-import Root, { action as rootAction, loader as rootLoader } from './routes/root'
+import { action as chatAction, loader as chatLoader } from './api/chatRoute'
+import { action as newChatAction } from './api/newRoute'
+import { action as rootAction, loader as rootLoader } from './api/rootRoute'
 import ErrorPage from './error-page'
-import Chat, { loader as chatLoader, action as chatAction } from './routes/chat'
-import NewChat, { action as newChatAction } from './routes/chat/new'
+import Chat from './routes/chat'
+import NewChat from './routes/chat/new'
+import Root from './routes/root'
 
 const router = createBrowserRouter([
 	{

@@ -1,6 +1,7 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { ActionIcon, Box, Flex, Text, createStyles } from '@mantine/core'
-import { IMessage } from '../types'
+import { IMessage, IUser } from '../types'
+import { useOutletContext } from 'react-router-dom'
 
 const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
@@ -18,7 +19,8 @@ interface IProps {
 }
 
 export default function Message({ message }: IProps) {
-	const { classes } = useStyles({ current: false })
+	const { user } = useOutletContext() as { user: IUser }
+	const { classes } = useStyles({ current: user.id === message.user_id })
 
 	return (
 		<Box className={classes.root}>

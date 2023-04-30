@@ -10,15 +10,7 @@ import {
 	createStyles,
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import {
-	ActionFunctionArgs,
-	Form,
-	Outlet,
-	json,
-	useActionData,
-} from 'react-router-dom'
-import { getAllChats } from '../api/chatsDB'
-import { addUser, getUserById, getUserByUsername } from '../api/usersDB'
+import { Form, Outlet, useActionData } from 'react-router-dom'
 import Header from '../components/Header'
 import Navbar from '../components/Navbar'
 import { IUser } from '../types'
@@ -40,32 +32,6 @@ const useStyles = createStyles(theme => ({
 		boxShadow: theme.shadows.md,
 	},
 }))
-
-export async function loader() {
-	const chats = await getAllChats()
-
-	return json({ chats })
-}
-
-export async function action({ request }: ActionFunctionArgs) {
-	const formData = Object.fromEntries(await request.formData()) as {
-		username: string
-	}
-
-	if (!formData.username) throw new Error('no username')
-
-	const user = await getUserByUsername(formData.username)
-	if (user) {
-		return json({ user })
-	}
-
-	const newUserId = await addUser(formData.username)
-	const newUser = await getUserById(newUserId)
-
-	if (!newUser) throw new Error('cannot get new user')
-
-	return json({ user: newUser })
-}
 
 export default function Root() {
 	const { classes } = useStyles()

@@ -1,23 +1,5 @@
 import { Button, Flex, Modal, TextInput } from '@mantine/core'
-import {
-	ActionFunctionArgs,
-	Form,
-	redirect,
-	useNavigate,
-} from 'react-router-dom'
-import { createChat } from '../../api/chatsDB'
-
-export async function action({ request }: ActionFunctionArgs) {
-	const formData = Object.fromEntries(await request.formData()) as {
-		title: string
-	}
-
-	if (!formData.title) throw new Error('no chat title')
-
-	const chatId = await createChat(formData.title)
-
-	return redirect(`/chats/${chatId}`)
-}
+import { Form, useNavigate } from 'react-router-dom'
 
 export default function NewChat() {
 	const navigate = useNavigate()
