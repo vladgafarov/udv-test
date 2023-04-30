@@ -2,6 +2,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { ActionIcon, Input, TextInput, createStyles } from '@mantine/core'
 import { useFetcher, useOutletContext, useParams } from 'react-router-dom'
 import { IUser } from '../types'
+import { useState } from 'react'
 
 const useStyles = createStyles(theme => ({
 	root: {
@@ -27,6 +28,7 @@ export default function ChatInput() {
 	const { chatId } = useParams()
 	const { user } = useOutletContext() as { user: IUser }
 	const fetcher = useFetcher()
+	const [message, setMessage] = useState<string>('')
 
 	return (
 		<fetcher.Form method="post">
@@ -35,6 +37,8 @@ export default function ChatInput() {
 			<Input type="hidden" name="username" defaultValue={user.username} />
 			<div className={classes.root}>
 				<TextInput
+					value={message}
+					onChange={e => setMessage(e.currentTarget.value)}
 					name="message"
 					className={classes.input}
 					autoComplete={'off'}
@@ -45,6 +49,7 @@ export default function ChatInput() {
 					size="lg"
 					color="indigo.4"
 					loading={fetcher.state === 'submitting'}
+					disabled={!message}
 				>
 					<PaperAirplaneIcon height={18} />
 				</ActionIcon>
