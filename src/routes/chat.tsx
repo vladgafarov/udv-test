@@ -10,11 +10,12 @@ const useStyles = createStyles(theme => ({
 	wrapper: {
 		height: `calc(100vh - 60px - 2rem)`,
 		background: theme.colors.gray[0],
-		overflow: 'hidden',
 		position: 'relative',
+		display: 'flex',
+		flexDirection: 'column',
 	},
 	scrollArea: {
-		height: `calc(100% - 60px)`,
+		flexGrow: 1,
 		'> div > div': {
 			height: '100%',
 		},
