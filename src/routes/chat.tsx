@@ -68,7 +68,15 @@ export default function Chat() {
 
 	return (
 		<div className={classes.wrapper}>
-			<ScrollArea className={classes.scrollArea} viewportRef={scrollableRef}>
+			<ScrollArea
+				className={classes.scrollArea}
+				viewportRef={scrollableRef}
+				styles={() => ({
+					scrollbar: {
+						zIndex: 2,
+					},
+				})}
+			>
 				<Stack justify="flex-end" h="100%">
 					{[...messagesByDate].map(([date, messages], i) => {
 						return (
@@ -80,6 +88,8 @@ export default function Chat() {
 										position: 'sticky',
 										top: 0,
 										color: theme.colors.gray[5],
+										backgroundColor: theme.colors.gray[0],
+										zIndex: 1,
 									})}
 								/>
 								{messages.map(message => (

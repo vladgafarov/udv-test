@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router-dom'
 import { getChatById } from './chatsDB'
-import { createMessage, getMessagesFromChat } from './messagesDB'
+import { createMessage, deleteMessage, getMessagesFromChat } from './messagesDB'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const { chatId } = params
@@ -26,6 +26,16 @@ export async function action({ request }: ActionFunctionArgs) {
 		chatId: string
 		userId: string
 		username: string
+		intent?: 'deleteMessage'
+		messageId?: string
+	}
+
+	if (formData.intent === 'deleteMessage') {
+		if (!formData.messageId) throw new Error('no messageid')
+
+		await deleteMessage(formData.messageId)
+
+		return { ok: true }
 	}
 
 	if (

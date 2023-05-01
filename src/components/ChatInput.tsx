@@ -1,8 +1,8 @@
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { ActionIcon, Input, TextInput, createStyles } from '@mantine/core'
-import { useFetcher, useOutletContext, useParams } from 'react-router-dom'
-import { IUser } from '../types'
 import { useEffect, useState } from 'react'
+import { useFetcher, useParams } from 'react-router-dom'
+import { useUser } from '../utils/useUser'
 
 const useStyles = createStyles(theme => ({
 	root: {
@@ -26,7 +26,7 @@ const useStyles = createStyles(theme => ({
 export default function ChatInput() {
 	const { classes } = useStyles()
 	const { chatId } = useParams()
-	const { user } = useOutletContext() as { user: IUser }
+	const user = useUser()
 	const fetcher = useFetcher()
 	const [message, setMessage] = useState<string>('')
 

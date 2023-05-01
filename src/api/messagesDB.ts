@@ -36,3 +36,9 @@ export async function getMessagesFromChat(chatId: string) {
 
 	return db.getAllFromIndex('messages', 'by-chat-id', chatId)
 }
+
+export async function deleteMessage(messageId: string) {
+	const db = await messagesDB
+
+	return db.delete('messages', messageId)
+}

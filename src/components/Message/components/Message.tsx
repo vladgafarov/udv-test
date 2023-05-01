@@ -1,7 +1,8 @@
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { ActionIcon, Box, Flex, Text, createStyles } from '@mantine/core'
-import { IMessage, IUser } from '../types'
-import { useOutletContext } from 'react-router-dom'
+import { Box, Flex, Text, createStyles } from '@mantine/core'
+import { useMemo } from 'react'
+import { IMessage } from '../../../types'
+import { useUser } from '../../../utils/useUser'
+import Menu from './Menu'
 
 const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
@@ -19,8 +20,12 @@ interface IProps {
 }
 
 export default function Message({ message }: IProps) {
-	const { user } = useOutletContext() as { user: IUser }
-	const { classes } = useStyles({ current: user.id === message.user_id })
+	const user = useUser()
+	const isCurrentUser = useMemo(
+		() => user.id === message.user_id,
+		[message.user_id, user.id]
+	)
+	const { classes } = useStyles({ current: isCurrentUser })
 
 	return (
 		<Box className={classes.root}>
@@ -28,9 +33,7 @@ export default function Message({ message }: IProps) {
 				<Text size="sm" weight={600}>
 					{message.user.username}
 				</Text>
-				<ActionIcon size="xs">
-					<ChevronDownIcon />
-				</ActionIcon>
+				<Menu userId={message.user_id} messageId={message.id} />
 			</Flex>
 
 			<Text py="xs">{message.text}</Text>
