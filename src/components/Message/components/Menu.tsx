@@ -5,8 +5,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { ActionIcon, Menu as MMenu } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { useUser } from '@utils/useUser'
 import { useMemo } from 'react'
-import { useUser } from '../../../utils/useUser'
 import DeleteModal from './DeleteModal'
 
 interface IProps {

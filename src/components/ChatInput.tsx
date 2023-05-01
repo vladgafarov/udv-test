@@ -1,8 +1,8 @@
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { ActionIcon, Input, TextInput, createStyles } from '@mantine/core'
+import { useUser } from '@utils/useUser'
 import { useEffect, useState } from 'react'
 import { useFetcher, useParams } from 'react-router-dom'
-import { useUser } from '../utils/useUser'
 
 const useStyles = createStyles(theme => ({
 	root: {

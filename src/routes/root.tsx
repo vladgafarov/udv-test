@@ -11,9 +11,9 @@ import {
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { Form, Outlet, useActionData, useNavigate } from 'react-router-dom'
-import Header from '../components/Header'
-import Navbar from '../components/Navbar'
-import { IUser } from '../types'
+import Header from '@components/Header'
+import Navbar from '@components/Navbar'
+import { IUser } from '@types'
 
 const useStyles = createStyles(theme => ({
 	wrapper: {

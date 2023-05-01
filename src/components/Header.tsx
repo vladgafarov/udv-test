@@ -3,7 +3,7 @@ import {
 	UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Flex, Menu, Text, Title } from '@mantine/core'
-import { IUser } from '../types'
+import { IUser } from '@types'
 
 interface IProps {
 	user: IUser

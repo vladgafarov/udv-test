@@ -1,8 +1,8 @@
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { Button, Flex, ScrollArea, Stack } from '@mantine/core'
+import { IChat } from '@types'
 import { useMemo } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
-import { IChat } from '../types'
 import ChatLink from './ChatLink'
 
 export default function Navbar() {

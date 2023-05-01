@@ -1,10 +1,10 @@
+import ChatInput from '@components/ChatInput'
+import Message from '@components/Message'
 import { Divider, ScrollArea, Stack, Text, createStyles } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
+import { IChat, IMessage } from '@types'
 import { Fragment, useEffect, useMemo } from 'react'
 import { useLoaderData, useParams } from 'react-router-dom'
-import ChatInput from '../components/ChatInput'
-import Message from '../components/Message'
-import { IChat, IMessage } from '../types'
 
 const useStyles = createStyles(theme => ({
 	wrapper: {

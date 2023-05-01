@@ -1,7 +1,7 @@
 import { Box, Flex, Text, createStyles } from '@mantine/core'
+import { IMessage } from '@types'
+import { useUser } from '@utils/useUser'
 import { useMemo } from 'react'
-import { IMessage } from '../../../types'
-import { useUser } from '../../../utils/useUser'
 import Menu from './Menu'
 
 const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
