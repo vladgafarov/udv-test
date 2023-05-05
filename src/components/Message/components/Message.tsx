@@ -3,6 +3,8 @@ import { IMessage } from '@types'
 import { useUser } from '@utils/useUser'
 import { useMemo } from 'react'
 import Menu from './Menu'
+import ImageViewerModal from '@components/ImageViewerModal'
+import { useDisclosure } from '@mantine/hooks'
 
 const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
@@ -19,6 +21,7 @@ interface IProps {
 }
 
 export default function Message({ message }: IProps) {
+	const [isImageViewerModalOpen, handleImageViewerModal] = useDisclosure(false)
 	const user = useUser()
 	const isCurrentUser = useMemo(
 		() => user.id === message.user_id,
@@ -38,7 +41,16 @@ export default function Message({ message }: IProps) {
 			<Text py="xs">{message.text}</Text>
 
 			{message.media ? (
-				<Image maw={240} fit="contain" src={message.media} radius={'sm'} />
+				<Image
+					maw={240}
+					fit="contain"
+					src={message.media}
+					radius={'sm'}
+					onClick={handleImageViewerModal.open}
+					sx={() => ({
+						cursor: 'pointer',
+					})}
+				/>
 			) : null}
 
 			<Text color="dimmed" size={'xs'} align="end">
@@ -48,6 +60,12 @@ export default function Message({ message }: IProps) {
 					second: undefined,
 				})}
 			</Text>
+
+			<ImageViewerModal
+				isOpen={isImageViewerModalOpen}
+				onClose={handleImageViewerModal.close}
+				imageUrl={message.media}
+			/>
 		</Box>
 	)
 }

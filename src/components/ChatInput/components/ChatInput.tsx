@@ -1,3 +1,4 @@
+import ImageViewerModal from '@components/ImageViewerModal'
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import {
@@ -12,7 +13,6 @@ import { useDisclosure } from '@mantine/hooks'
 import { useUser } from '@utils/useUser'
 import { useEffect, useRef, useState } from 'react'
 import { useFetcher, useParams } from 'react-router-dom'
-import ImageViewerModal from './ImageViewerModal'
 
 function getBase64(file: File) {
 	return new Promise<string>((resolve, reject) => {
