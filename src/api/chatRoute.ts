@@ -26,6 +26,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		chatId: string
 		userId: string
 		username: string
+		media?: string
 		intent?: 'deleteMessage'
 		messageId?: string
 	}
@@ -39,7 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 
 	if (
-		!formData.message ||
+		(!formData.message && !formData.media) ||
 		!formData.chatId ||
 		!formData.userId ||
 		!formData.username
@@ -51,6 +52,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		chatId: formData.chatId,
 		userId: formData.userId,
 		username: formData.username,
+		media: formData.media ?? undefined,
 	})
 
 	return { ok: true }

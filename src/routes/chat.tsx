@@ -78,7 +78,7 @@ export default function Chat() {
 					},
 				})}
 			>
-				<Stack justify="flex-end" h="100%">
+				<Stack justify="flex-end" h="100%" align="start">
 					{[...messagesByDate].map(([date, messages], i) => {
 						return (
 							<Fragment key={i}>
@@ -91,6 +91,7 @@ export default function Chat() {
 										color: theme.colors.gray[5],
 										backgroundColor: theme.colors.gray[0],
 										zIndex: 1,
+										width: '100%',
 									})}
 								/>
 								{messages.map(message => (

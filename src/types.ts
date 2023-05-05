@@ -17,6 +17,7 @@ export interface IMessage {
 	chat_id: string
 	text: string
 	createdAt: string
+	media: string | null
 	user: {
 		username: string
 	}

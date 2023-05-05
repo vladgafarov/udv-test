@@ -14,6 +14,7 @@ export async function createMessage(payload: {
 	userId: string
 	username: string
 	chatId: string
+	media?: string
 }) {
 	const db = await messagesDB
 
@@ -28,6 +29,7 @@ export async function createMessage(payload: {
 			username: payload.username,
 		},
 		createdAt: new Date().toISOString(),
+		media: payload.media || null,
 	})
 }
 

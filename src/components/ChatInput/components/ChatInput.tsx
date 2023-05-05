@@ -14,6 +14,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useFetcher, useParams } from 'react-router-dom'
 import ImageViewerModal from './ImageViewerModal'
 
+function getBase64(file: File) {
+	return new Promise<string>((resolve, reject) => {
+		const reader = new FileReader()
+		reader.readAsDataURL(file)
+		reader.onload = () => resolve(reader.result as string)
+		reader.onerror = error => reject(error)
+	})
+}
+
 const useStyles = createStyles(theme => ({
 	root: {
 		paddingTop: theme.spacing.sm,
@@ -37,6 +46,7 @@ export default function ChatInput() {
 	const fetcher = useFetcher()
 	const [message, setMessage] = useState<string>('')
 	const [file, setFile] = useState<File | null>(null)
+	const [media, setMedia] = useState<string>('')
 	const resetRef = useRef<() => void>(null)
 	const [isImageViewerOpen, imageViewerModalHandlers] = useDisclosure(false)
 
@@ -48,8 +58,15 @@ export default function ChatInput() {
 	useEffect(() => {
 		if (fetcher.state === 'idle') {
 			setMessage('')
+			clearFile()
 		}
 	}, [fetcher.state])
+
+	useEffect(() => {
+		if (file) {
+			getBase64(file).then(setMedia)
+		}
+	}, [file])
 
 	return (
 		<div className={classes.root}>
@@ -72,6 +89,7 @@ export default function ChatInput() {
 				<Input type="hidden" name="chatId" defaultValue={chatId} />
 				<Input type="hidden" name="userId" defaultValue={user.id} />
 				<Input type="hidden" name="username" defaultValue={user.username} />
+				<Input type="hidden" name="media" value={media} />
 				<div className={classes.controls}>
 					<TextInput
 						value={message}

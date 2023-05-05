@@ -1,4 +1,4 @@
-import { Box, Flex, Text, createStyles } from '@mantine/core'
+import { Box, Flex, Image, Text, createStyles } from '@mantine/core'
 import { IMessage } from '@types'
 import { useUser } from '@utils/useUser'
 import { useMemo } from 'react'
@@ -8,7 +8,6 @@ const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
 		backgroundColor: current ? theme.colors.indigo[1] : theme.colors.gray[2],
 		borderRadius: theme.radius.sm,
-		maxWidth: 'min-content',
 		minWidth: '160px',
 		paddingBlock: theme.spacing.xs,
 		paddingInline: theme.spacing.sm,
@@ -37,6 +36,10 @@ export default function Message({ message }: IProps) {
 			</Flex>
 
 			<Text py="xs">{message.text}</Text>
+
+			{message.media ? (
+				<Image maw={240} fit="contain" src={message.media} radius={'sm'} />
+			) : null}
 
 			<Text color="dimmed" size={'xs'} align="end">
 				{new Date(message.createdAt).toLocaleTimeString('ru-RU', {
