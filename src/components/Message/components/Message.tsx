@@ -1,10 +1,11 @@
 import { Box, Flex, Image, Text, createStyles } from '@mantine/core'
 import { IMessage } from '@types'
 import { useUser } from '@utils/useUser'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Menu from './Menu'
 import ImageViewerModal from '@components/ImageViewerModal'
 import { useDisclosure } from '@mantine/hooks'
+import ReplyBlock from './ReplyBlock'
 
 const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 	root: {
@@ -18,14 +19,18 @@ const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 
 interface IProps {
 	message: IMessage
+	onReply: () => void
 }
 
-export default function Message({ message }: IProps) {
+export default function Message({ message, onReply }: IProps) {
 	const [isImageViewerModalOpen, handleImageViewerModal] = useDisclosure(false)
 	const user = useUser()
 	const isCurrentUser = useMemo(
 		() => user.id === message.user_id,
 		[message.user_id, user.id]
+	)
+	const [imagePreview, setImagePreview] = useState<string>(
+		message?.media || ''
 	)
 	const { classes } = useStyles({ current: isCurrentUser })
 
@@ -35,7 +40,12 @@ export default function Message({ message }: IProps) {
 				<Text size="sm" weight={600}>
 					{message.user.username}
 				</Text>
-				<Menu userId={message.user_id} messageId={message.id} />
+				<Menu
+					userId={message.user_id}
+					messageId={message.id}
+					onReply={onReply}
+					reply={message.replyTo}
+				/>
 			</Flex>
 
 			<Text py="xs">{message.text}</Text>
@@ -53,6 +63,16 @@ export default function Message({ message }: IProps) {
 				/>
 			) : null}
 
+			{message.replyTo ? (
+				<ReplyBlock
+					reply={message.replyTo}
+					onImagePreview={imageUrl => {
+						setImagePreview(imageUrl)
+						handleImageViewerModal.open()
+					}}
+				/>
+			) : null}
+
 			<Text color="dimmed" size={'xs'} align="end">
 				{new Date(message.createdAt).toLocaleTimeString('ru-RU', {
 					hour: '2-digit',
@@ -64,7 +84,7 @@ export default function Message({ message }: IProps) {
 			<ImageViewerModal
 				isOpen={isImageViewerModalOpen}
 				onClose={handleImageViewerModal.close}
-				imageUrl={message.media}
+				imageUrl={imagePreview}
 			/>
 		</Box>
 	)

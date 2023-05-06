@@ -27,6 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		userId: string
 		username: string
 		media?: string
+		replyToMessageId?: string
 		intent?: 'deleteMessage'
 		messageId?: string
 	}
@@ -53,6 +54,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		userId: formData.userId,
 		username: formData.username,
 		media: formData.media ?? undefined,
+		replyToMessageId: formData.replyToMessageId,
 	})
 
 	return { ok: true }

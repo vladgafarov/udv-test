@@ -1,5 +1,5 @@
 import { openDB } from 'idb'
-import { IMessagesDB } from '../types'
+import { ICreateMessageDto, IMessagesDB } from '../types'
 
 const messagesDB = openDB<IMessagesDB>('messaages', 1, {
 	upgrade(db) {
@@ -9,27 +9,45 @@ const messagesDB = openDB<IMessagesDB>('messaages', 1, {
 	},
 })
 
-export async function createMessage(payload: {
-	text: string
-	userId: string
-	username: string
-	chatId: string
-	media?: string
-}) {
+export async function createMessage(dto: ICreateMessageDto) {
 	const db = await messagesDB
 
 	const uuid = crypto.randomUUID()
 
+	if (dto.replyToMessageId) {
+		// const tx = db.transaction('messages', 'readwrite')
+
+		const messageToReply = await db.get('messages', dto.replyToMessageId)
+
+		if (!messageToReply) throw new Error('message not found')
+
+		return db.add('messages', {
+			id: uuid,
+			text: dto.text,
+			chat_id: dto.chatId,
+			user_id: dto.userId,
+			user: {
+				username: dto.username,
+			},
+			createdAt: new Date().toISOString(),
+			media: dto.media || null,
+			replyTo: messageToReply,
+			replyToMessageId: dto.replyToMessageId,
+		})
+	}
+
 	return db.add('messages', {
 		id: uuid,
-		text: payload.text,
-		chat_id: payload.chatId,
-		user_id: payload.userId,
+		text: dto.text,
+		chat_id: dto.chatId,
+		user_id: dto.userId,
 		user: {
-			username: payload.username,
+			username: dto.username,
 		},
 		createdAt: new Date().toISOString(),
-		media: payload.media || null,
+		media: dto.media || null,
+		replyTo: null,
+		replyToMessageId: null,
 	})
 }
 

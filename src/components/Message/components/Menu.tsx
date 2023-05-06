@@ -8,17 +8,21 @@ import { useDisclosure } from '@mantine/hooks'
 import { useUser } from '@utils/useUser'
 import { useMemo } from 'react'
 import DeleteModal from './DeleteModal'
+import { IMessage } from '@types'
 
 interface IProps {
 	userId: string
 	messageId: string
+	onReply: () => void
+	reply: IMessage | null
 }
 
-export default function Menu({ userId, messageId }: IProps) {
+export default function Menu({ userId, messageId, onReply, reply }: IProps) {
 	const user = useUser()
 	const isCurrentUser = useMemo(() => user.id === userId, [user.id, userId])
-
 	const [isDeleteModalOpen, deleteModalHandlers] = useDisclosure(false)
+
+	if (reply && !isCurrentUser) return null
 
 	return (
 		<>
@@ -29,9 +33,14 @@ export default function Menu({ userId, messageId }: IProps) {
 					</ActionIcon>
 				</MMenu.Target>
 				<MMenu.Dropdown>
-					<MMenu.Item icon={<ArrowUturnRightIcon height={14} />}>
-						Reply
-					</MMenu.Item>
+					{!reply ? (
+						<MMenu.Item
+							icon={<ArrowUturnRightIcon height={14} />}
+							onClick={onReply}
+						>
+							Reply
+						</MMenu.Item>
+					) : null}
 					{isCurrentUser ? (
 						<MMenu.Item
 							onClick={deleteModalHandlers.open}

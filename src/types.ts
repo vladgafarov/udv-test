@@ -18,9 +18,25 @@ export interface IMessage {
 	text: string
 	createdAt: string
 	media: string | null
-	user: {
-		username: string
-	}
+	replyToMessageId: string | null
+	replyTo: IMessage | null
+	user: Pick<IUser, 'username'>
+}
+
+export interface IMessageToReplyClient {
+	id: string
+	text: string
+	user: Pick<IUser, 'username'>
+	media: string | null
+}
+
+export interface ICreateMessageDto {
+	text: string
+	userId: string
+	username: string
+	chatId: string
+	media?: string
+	replyToMessageId?: string
 }
 
 export interface IUsersDB extends DBSchema {

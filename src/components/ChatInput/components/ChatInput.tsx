@@ -10,9 +10,11 @@ import {
 	createStyles,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { IMessageToReplyClient } from '@types'
 import { useUser } from '@utils/useUser'
 import { useEffect, useRef, useState } from 'react'
 import { useFetcher, useParams } from 'react-router-dom'
+import MessageToReply from './MessageToReply'
 
 function getBase64(file: File) {
 	return new Promise<string>((resolve, reject) => {
@@ -39,7 +41,15 @@ const useStyles = createStyles(theme => ({
 	},
 }))
 
-export default function ChatInput() {
+interface IProps {
+	messageToReply?: IMessageToReplyClient
+	onClearMessageToReply: () => void
+}
+
+export default function ChatInput({
+	messageToReply,
+	onClearMessageToReply,
+}: IProps) {
 	const { classes } = useStyles()
 	const { chatId } = useParams()
 	const user = useUser()
@@ -47,6 +57,7 @@ export default function ChatInput() {
 	const [message, setMessage] = useState<string>('')
 	const [file, setFile] = useState<File | null>(null)
 	const [media, setMedia] = useState<string>('')
+	const [imageForPreview, setImageForPreview] = useState<string>('')
 	const resetRef = useRef<() => void>(null)
 	const [isImageViewerOpen, imageViewerModalHandlers] = useDisclosure(false)
 
@@ -55,11 +66,27 @@ export default function ChatInput() {
 		resetRef.current?.()
 	}
 
+	function openPinnedImage() {
+		if (!file) throw new Error('no file')
+
+		setImageForPreview(URL.createObjectURL(file))
+		imageViewerModalHandlers.open()
+	}
+
+	function openImageInReply() {
+		if (!messageToReply?.media) throw new Error('no media in reply')
+
+		setImageForPreview(messageToReply.media)
+		imageViewerModalHandlers.open()
+	}
+
 	useEffect(() => {
 		if (fetcher.state === 'idle') {
 			setMessage('')
 			clearFile()
+			onClearMessageToReply()
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetcher.state])
 
 	useEffect(() => {
@@ -79,17 +106,31 @@ export default function ChatInput() {
 					}
 					variant="subtle"
 					onClick={() => {
-						file && imageViewerModalHandlers.open()
+						openPinnedImage()
 					}}
 				>
 					{file.name}
 				</Button>
 			) : null}
+
+			{messageToReply ? (
+				<MessageToReply
+					messageToReply={messageToReply}
+					openImagePreview={openImageInReply}
+					onClear={onClearMessageToReply}
+				/>
+			) : null}
+
 			<fetcher.Form method="post">
 				<Input type="hidden" name="chatId" defaultValue={chatId} />
 				<Input type="hidden" name="userId" defaultValue={user.id} />
 				<Input type="hidden" name="username" defaultValue={user.username} />
 				<Input type="hidden" name="media" value={media} />
+				<Input
+					type="hidden"
+					name="replyToMessageId"
+					value={messageToReply?.id}
+				/>
 				<div className={classes.controls}>
 					<TextInput
 						value={message}
@@ -130,7 +171,7 @@ export default function ChatInput() {
 			<ImageViewerModal
 				isOpen={isImageViewerOpen}
 				onClose={imageViewerModalHandlers.close}
-				imageUrl={file ? URL.createObjectURL(file) : null}
+				imageUrl={imageForPreview}
 			/>
 		</div>
 	)

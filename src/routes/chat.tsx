@@ -2,8 +2,8 @@ import ChatInput from '@components/ChatInput'
 import Message from '@components/Message'
 import { Divider, ScrollArea, Stack, Text, createStyles } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
-import { IChat, IMessage } from '@types'
-import { Fragment, useEffect, useMemo } from 'react'
+import { IChat, IMessage, IMessageToReplyClient } from '@types'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useLoaderData, useParams } from 'react-router-dom'
 
 const useStyles = createStyles(theme => ({
@@ -29,6 +29,7 @@ export default function Chat() {
 		messages: IMessage[]
 	}
 	const { classes } = useStyles()
+	const [messageToReply, setMessageToReply] = useState<IMessageToReplyClient>()
 
 	const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
 		duration: 0,
@@ -95,7 +96,18 @@ export default function Chat() {
 									})}
 								/>
 								{messages.map(message => (
-									<Message key={message.id} message={message} />
+									<Message
+										key={message.id}
+										message={message}
+										onReply={() => {
+											setMessageToReply({
+												id: message.id,
+												text: message.text,
+												user: { username: message.user.username },
+												media: message.media,
+											})
+										}}
+									/>
 								))}
 							</Fragment>
 						)
@@ -106,7 +118,10 @@ export default function Chat() {
 					<div ref={targetRef}></div>
 				</Stack>
 			</ScrollArea>
-			<ChatInput />
+			<ChatInput
+				messageToReply={messageToReply}
+				onClearMessageToReply={() => setMessageToReply(undefined)}
+			/>
 		</div>
 	)
 }
