@@ -5,6 +5,7 @@ import {
 	ActionIcon,
 	Button,
 	FileButton,
+	Flex,
 	Input,
 	TextInput,
 	createStyles,
@@ -98,19 +99,26 @@ export default function ChatInput({
 	return (
 		<div className={classes.root}>
 			{file ? (
-				<Button
-					rightIcon={
-						<ActionIcon size="sm" onClick={clearFile}>
-							<XMarkIcon height={16} />
-						</ActionIcon>
-					}
-					variant="subtle"
-					onClick={() => {
-						openPinnedImage()
-					}}
-				>
-					{file.name}
-				</Button>
+				<Flex align={'center'}>
+					<Button
+						leftIcon={
+							<img
+								width={26}
+								height={26}
+								src={URL.createObjectURL(file)}
+							/>
+						}
+						variant="subtle"
+						onClick={() => {
+							openPinnedImage()
+						}}
+					>
+						{file.name}
+					</Button>
+					<ActionIcon size="sm" onClick={clearFile}>
+						<XMarkIcon height={16} />
+					</ActionIcon>
+				</Flex>
 			) : null}
 
 			{messageToReply ? (
