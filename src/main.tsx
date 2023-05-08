@@ -2,7 +2,11 @@ import { MantineProvider } from '@mantine/core'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { action as chatAction, loader as chatLoader } from './api/chatRoute'
+import {
+	action as chatAction,
+	loader as chatLoader,
+	deleteAction,
+} from './api/chatRoute'
 import { action as newChatAction } from './api/newRoute'
 import { action as rootAction, loader as rootLoader } from './api/rootRoute'
 import ErrorPage from './error-page'
@@ -26,6 +30,10 @@ const router = createBrowserRouter([
 						loader: chatLoader,
 						action: chatAction,
 						element: <Chat />,
+					},
+					{
+						path: '/chats/:chatId/delete-message',
+						action: deleteAction,
 					},
 					{
 						path: '/chats/new',

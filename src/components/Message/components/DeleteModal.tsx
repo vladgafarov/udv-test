@@ -1,5 +1,5 @@
 import { Button, Flex, Modal } from '@mantine/core'
-import { useFetcher } from 'react-router-dom'
+import { useFetcher, useFormAction } from 'react-router-dom'
 
 interface IProps {
 	isOpen: boolean
@@ -9,9 +9,10 @@ interface IProps {
 
 export default function DeleteModal({ isOpen, onClose, messageId }: IProps) {
 	const fetcher = useFetcher()
+	const action = useFormAction('delete-message')
 
 	function handleDelete() {
-		fetcher.submit({ intent: 'deleteMessage', messageId }, { method: 'post' })
+		fetcher.submit({ messageId }, { method: 'post', action })
 	}
 
 	return (

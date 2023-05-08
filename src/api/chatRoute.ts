@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router-dom'
 import { getChatById } from './chatsDB'
 import { createMessage, deleteMessage, getMessagesFromChat } from './messagesDB'
+import { ICreateMessageDto } from '@types'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const { chatId } = params
@@ -21,27 +22,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const formData = Object.fromEntries(await request.formData()) as {
-		message: string
-		chatId: string
-		userId: string
-		username: string
-		media?: string
-		replyToMessageId?: string
-		intent?: 'deleteMessage'
-		messageId?: string
-	}
-
-	if (formData.intent === 'deleteMessage') {
-		if (!formData.messageId) throw new Error('no messageid')
-
-		await deleteMessage(formData.messageId)
-
-		return { ok: true }
-	}
+	const formData = Object.fromEntries(
+		await request.formData()
+	) as unknown as ICreateMessageDto
 
 	if (
-		(!formData.message && !formData.media) ||
+		(!formData.text && !formData.media) ||
 		!formData.chatId ||
 		!formData.userId ||
 		!formData.username
@@ -49,13 +35,24 @@ export async function action({ request }: ActionFunctionArgs) {
 		throw new Error('cannot create message')
 
 	await createMessage({
-		text: formData.message,
+		text: formData.text,
 		chatId: formData.chatId,
 		userId: formData.userId,
 		username: formData.username,
 		media: formData.media ?? undefined,
 		replyToMessageId: formData.replyToMessageId,
 	})
+
+	return { ok: true }
+}
+
+export async function deleteAction({ request }: ActionFunctionArgs) {
+	const formData = Object.fromEntries(await request.formData()) as {
+		messageId: string
+	}
+	if (!formData.messageId) throw new Error('no message id')
+
+	await deleteMessage(formData.messageId)
 
 	return { ok: true }
 }

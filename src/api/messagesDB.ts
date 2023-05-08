@@ -1,5 +1,5 @@
 import { openDB } from 'idb'
-import { ICreateMessageDto, IMessagesDB } from '../types'
+import { ICreateMessageDto, IMessagesDB, IMessage } from '../types'
 
 const messagesDB = openDB<IMessagesDB>('messaages', 1, {
 	upgrade(db) {
@@ -13,30 +13,7 @@ export async function createMessage(dto: ICreateMessageDto) {
 	const db = await messagesDB
 
 	const uuid = crypto.randomUUID()
-
-	if (dto.replyToMessageId) {
-		// const tx = db.transaction('messages', 'readwrite')
-
-		const messageToReply = await db.get('messages', dto.replyToMessageId)
-
-		if (!messageToReply) throw new Error('message not found')
-
-		return db.add('messages', {
-			id: uuid,
-			text: dto.text,
-			chat_id: dto.chatId,
-			user_id: dto.userId,
-			user: {
-				username: dto.username,
-			},
-			createdAt: new Date().toISOString(),
-			media: dto.media || null,
-			replyTo: messageToReply,
-			replyToMessageId: dto.replyToMessageId,
-		})
-	}
-
-	return db.add('messages', {
+	const data: IMessage = {
 		id: uuid,
 		text: dto.text,
 		chat_id: dto.chatId,
@@ -48,7 +25,21 @@ export async function createMessage(dto: ICreateMessageDto) {
 		media: dto.media || null,
 		replyTo: null,
 		replyToMessageId: null,
-	})
+	}
+
+	if (dto.replyToMessageId) {
+		const messageToReply = await db.get('messages', dto.replyToMessageId)
+
+		if (!messageToReply) throw new Error('message not found')
+
+		return db.add('messages', {
+			...data,
+			replyTo: messageToReply,
+			replyToMessageId: dto.replyToMessageId,
+		})
+	}
+
+	return db.add('messages', data)
 }
 
 export async function getMessagesFromChat(chatId: string) {

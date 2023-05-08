@@ -135,7 +135,7 @@ export default function ChatInput({
 					<TextInput
 						value={message}
 						onChange={e => setMessage(e.currentTarget.value)}
-						name="message"
+						name="text"
 						className={classes.input}
 						autoComplete={'off'}
 					/>
