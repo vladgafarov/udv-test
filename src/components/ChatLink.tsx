@@ -92,7 +92,11 @@ export default function ChatLink({ href, title }: IProps) {
 					<Popover.Dropdown>
 						<Text color="dimmed">Delete?</Text>
 						<Flex gap="sm">
-							<Button color="red" onClick={deleteChat}>
+							<Button
+								color="red"
+								onClick={deleteChat}
+								loading={fetcher.state === 'submitting'}
+							>
 								Yes
 							</Button>
 							<Button onClick={deletePopoverHandlers.close}>No</Button>
