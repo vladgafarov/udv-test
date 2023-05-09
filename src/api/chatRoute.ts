@@ -1,5 +1,9 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router-dom'
-import { getChatById } from './chatsDB'
+import {
+	ActionFunctionArgs,
+	LoaderFunctionArgs,
+	redirect,
+} from 'react-router-dom'
+import { deleteChat, getChatById } from './chatsDB'
 import { createMessage, deleteMessage, getMessagesFromChat } from './messagesDB'
 import { ICreateMessageDto } from '@types'
 
@@ -46,7 +50,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	return { ok: true }
 }
 
-export async function deleteAction({ request }: ActionFunctionArgs) {
+export async function deleteMessageAction({ request }: ActionFunctionArgs) {
 	const formData = Object.fromEntries(await request.formData()) as {
 		messageId: string
 	}
@@ -55,4 +59,12 @@ export async function deleteAction({ request }: ActionFunctionArgs) {
 	await deleteMessage(formData.messageId)
 
 	return { ok: true }
+}
+
+export async function deleteChatAction({ params }: ActionFunctionArgs) {
+	if (!params.chatId) throw new Error('no chat id')
+
+	await deleteChat(params.chatId)
+
+	return redirect('/')
 }

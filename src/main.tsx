@@ -5,7 +5,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import {
 	action as chatAction,
 	loader as chatLoader,
-	deleteAction,
+	deleteChatAction,
+	deleteMessageAction,
 } from './api/chatRoute'
 import { action as newChatAction } from './api/newRoute'
 import { action as rootAction, loader as rootLoader } from './api/rootRoute'
@@ -33,7 +34,11 @@ const router = createBrowserRouter([
 					},
 					{
 						path: '/chats/:chatId/delete-message',
-						action: deleteAction,
+						action: deleteMessageAction,
+					},
+					{
+						path: '/chats/:chatId/delete-chat',
+						action: deleteChatAction,
 					},
 					{
 						path: '/chats/new',
