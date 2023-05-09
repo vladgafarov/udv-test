@@ -29,7 +29,8 @@ export default function Chat() {
 		messages: IMessage[]
 	}
 	const { classes } = useStyles()
-	const [messageToReply, setMessageToReply] = useState<IMessageToReplyClient>()
+	const [messageToReply, setMessageToReply] =
+		useState<IMessageToReplyClient | null>(null)
 
 	const { scrollIntoView, targetRef, scrollableRef } = useScrollIntoView({
 		duration: 0,
@@ -120,7 +121,7 @@ export default function Chat() {
 			</ScrollArea>
 			<ChatInput
 				messageToReply={messageToReply}
-				onClearMessageToReply={() => setMessageToReply(undefined)}
+				onClearMessageToReply={() => setMessageToReply(null)}
 			/>
 		</div>
 	)

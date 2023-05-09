@@ -44,7 +44,7 @@ const useStyles = createStyles(theme => ({
 }))
 
 interface IProps {
-	messageToReply?: IMessageToReplyClient
+	messageToReply: IMessageToReplyClient | null
 	onClearMessageToReply: () => void
 }
 
@@ -86,6 +86,7 @@ export default function ChatInput({
 		if (fetcher.state === 'idle') {
 			setMessage('')
 			clearFile()
+			setMedia('')
 			onClearMessageToReply()
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,11 +136,13 @@ export default function ChatInput({
 				<Input type="hidden" name="userId" defaultValue={user.id} />
 				<Input type="hidden" name="username" defaultValue={user.username} />
 				<Input type="hidden" name="media" value={media} />
-				<Input
-					type="hidden"
-					name="replyToMessageId"
-					value={messageToReply?.id}
-				/>
+				{messageToReply ? (
+					<Input
+						type="hidden"
+						name="replyToMessageId"
+						value={messageToReply?.id}
+					/>
+				) : null}
 				<div className={classes.controls}>
 					<TextInput
 						value={message}

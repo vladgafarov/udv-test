@@ -58,7 +58,6 @@ export default function Root() {
 							my="md"
 							required
 							withAsterisk={false}
-							defaultValue={'hello'}
 						/>
 						<Input type="hidden" name="intent" defaultValue={'addUser'} />
 						<Flex justify={'end'}>
