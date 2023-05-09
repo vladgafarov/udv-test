@@ -49,6 +49,7 @@ const router = createBrowserRouter([
 						index: true,
 						element: <div>Select chat</div>,
 					},
+					{ path: '/chats', element: <div>Select chat</div> },
 				],
 			},
 		],

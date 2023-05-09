@@ -16,6 +16,7 @@ import { useUser } from '@utils/useUser'
 import { useEffect, useRef, useState } from 'react'
 import { useFetcher, useParams } from 'react-router-dom'
 import MessageToReply from './MessageToReply'
+import Emojis from './Emojis'
 
 function getBase64(file: File) {
 	return new Promise<string>((resolve, reject) => {
@@ -146,6 +147,11 @@ export default function ChatInput({
 						name="text"
 						className={classes.input}
 						autoComplete={'off'}
+					/>
+					<Emojis
+						onEmojiClick={emoji => {
+							setMessage(message + emoji)
+						}}
 					/>
 					<FileButton
 						resetRef={resetRef}
