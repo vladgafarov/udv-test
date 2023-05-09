@@ -65,6 +65,7 @@ export default function ChatInput({
 
 	function clearFile() {
 		setFile(null)
+		setMedia('')
 		resetRef.current?.()
 	}
 
@@ -135,7 +136,7 @@ export default function ChatInput({
 				<Input type="hidden" name="chatId" defaultValue={chatId} />
 				<Input type="hidden" name="userId" defaultValue={user.id} />
 				<Input type="hidden" name="username" defaultValue={user.username} />
-				<Input type="hidden" name="media" value={media} />
+				{file ? <Input type="hidden" name="media" value={media} /> : null}
 				{messageToReply ? (
 					<Input
 						type="hidden"
