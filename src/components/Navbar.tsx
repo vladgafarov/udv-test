@@ -1,14 +1,16 @@
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { Button, Flex, ScrollArea, Stack } from '@mantine/core'
 import { IChat } from '@types'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import ChatLink from './ChatLink'
 
 export default function Navbar() {
-	const { chats } = useLoaderData() as {
+	const bc = useRef(new BroadcastChannel('chats'))
+	const { chats: loaderChats } = useLoaderData() as {
 		chats: IChat[]
 	}
+	const [chats, setChats] = useState<IChat[]>(loaderChats)
 	const navigate = useNavigate()
 
 	const filteredChats: IChat[] = useMemo(() => {
@@ -17,6 +19,17 @@ export default function Navbar() {
 				new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
 		)
 	}, [chats])
+
+	useEffect(() => {
+		setChats(loaderChats)
+		bc.current.postMessage(loaderChats)
+	}, [loaderChats])
+
+	useEffect(() => {
+		bc.current.onmessage = event => {
+			setChats(event.data)
+		}
+	}, [])
 
 	return (
 		<>
