@@ -20,9 +20,14 @@ const useStyles = createStyles((theme, { current }: { current: boolean }) => ({
 interface IProps {
 	message: IMessage
 	onReply: () => void
+	onMessageDeleteCallback: (messageId: string) => void
 }
 
-export default function Message({ message, onReply }: IProps) {
+export default function Message({
+	message,
+	onReply,
+	onMessageDeleteCallback,
+}: IProps) {
 	const [isImageViewerModalOpen, handleImageViewerModal] = useDisclosure(false)
 	const user = useUser()
 	const isCurrentUser = useMemo(
@@ -45,6 +50,7 @@ export default function Message({ message, onReply }: IProps) {
 					messageId={message.id}
 					onReply={onReply}
 					reply={message.replyTo}
+					onMessageDeleteCallback={onMessageDeleteCallback}
 				/>
 			</Flex>
 

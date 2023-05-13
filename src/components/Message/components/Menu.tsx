@@ -15,9 +15,16 @@ interface IProps {
 	messageId: string
 	onReply: () => void
 	reply: IMessage | null
+	onMessageDeleteCallback: (messageId: string) => void
 }
 
-export default function Menu({ userId, messageId, onReply, reply }: IProps) {
+export default function Menu({
+	userId,
+	messageId,
+	onReply,
+	reply,
+	onMessageDeleteCallback,
+}: IProps) {
 	const user = useUser()
 	const isCurrentUser = useMemo(() => user.id === userId, [user.id, userId])
 	const [isDeleteModalOpen, deleteModalHandlers] = useDisclosure(false)
@@ -56,6 +63,7 @@ export default function Menu({ userId, messageId, onReply, reply }: IProps) {
 				isOpen={isDeleteModalOpen}
 				onClose={deleteModalHandlers.close}
 				messageId={messageId}
+				onMessageDeleteCallback={onMessageDeleteCallback}
 			/>
 		</>
 	)

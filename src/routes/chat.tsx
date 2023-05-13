@@ -6,18 +6,35 @@ import { IChat, IMessage, IMessageToReplyClient } from '@types'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useLoaderData, useParams } from 'react-router-dom'
 
-const messageObserver = {
-	subs: [] as Array<(message: IMessage) => void>,
-	subscribe: function(sub: (message: IMessage) => void) {
-		this.subs.push(sub)
+class MessageObserver {
+	private subs: {
+		add: Array<(message: IMessage) => void>
+		delete: Array<(messageId: string) => void>
+	} = { add: [], delete: [] }
+
+	onAdd(callback: (message: IMessage) => void) {
+		this.subs.add.push(callback)
 
 		return () => {
-			this.subs = this.subs.filter(item => item !== sub)
+			this.subs.add = this.subs.add.filter(item => item !== callback)
 		}
-	},
-	addMessage: function(message: IMessage) {
-		this.subs.forEach(sub => sub(message))
-	},
+	}
+
+	onDelete(callback: (messageId: string) => void) {
+		this.subs.delete.push(callback)
+
+		return () => {
+			this.subs.delete = this.subs.delete.filter(item => item !== callback)
+		}
+	}
+
+	add(message: IMessage) {
+		this.subs.add.forEach(item => item(message))
+	}
+
+	delete(messageId: string) {
+		this.subs.delete.forEach(item => item(messageId))
+	}
 }
 
 const useStyles = createStyles(theme => ({
@@ -35,6 +52,8 @@ const useStyles = createStyles(theme => ({
 		},
 	},
 }))
+
+const mo = new MessageObserver()
 
 export default function Chat() {
 	const { chatId } = useParams<{ chatId: string }>()
@@ -78,8 +97,9 @@ export default function Chat() {
 		return messagesByDate
 	}, [messages])
 
-	const addMessage = useCallback(
-		(message: IMessage) => messageObserver.addMessage(message),
+	const addMessage = useCallback((message: IMessage) => mo.add(message), [])
+	const deleteMessage = useCallback(
+		(messageId: string) => mo.delete(messageId),
 		[]
 	)
 
@@ -95,17 +115,25 @@ export default function Chat() {
 
 	useEffect(() => {
 		const bc = new BroadcastChannel(chatId as string)
-		const unsub = messageObserver.subscribe(data => {
-			bc.postMessage(data)
+		const unsub1 = mo.onAdd((message: IMessage) => {
+			bc.postMessage(message)
+		})
+		const unsub2 = mo.onDelete((messageId: string) => {
+			bc.postMessage(messageId)
 		})
 
-		bc.onmessage = (event: MessageEvent<IMessage>) => {
-			setMessages(prev => [...prev, event.data])
+		bc.onmessage = event => {
+			if (typeof event.data === 'string') {
+				setMessages(prev => prev.filter(i => i.id !== event.data))
+			} else {
+				setMessages(prev => [...prev, event.data])
+			}
 		}
 
 		return () => {
 			bc.close()
-			unsub()
+			unsub1()
+			unsub2()
 		}
 	}, [chatId])
 
@@ -148,6 +176,7 @@ export default function Chat() {
 												media: message.media,
 											})
 										}}
+										onMessageDeleteCallback={deleteMessage}
 									/>
 								))}
 							</Fragment>
