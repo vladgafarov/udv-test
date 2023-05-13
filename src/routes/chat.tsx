@@ -115,10 +115,10 @@ export default function Chat() {
 
 	useEffect(() => {
 		const bc = new BroadcastChannel(chatId as string)
-		const unsub1 = mo.onAdd((message: IMessage) => {
+		const unsubAdd = mo.onAdd((message: IMessage) => {
 			bc.postMessage(message)
 		})
-		const unsub2 = mo.onDelete((messageId: string) => {
+		const unsubDelete = mo.onDelete((messageId: string) => {
 			bc.postMessage(messageId)
 		})
 
@@ -132,8 +132,8 @@ export default function Chat() {
 
 		return () => {
 			bc.close()
-			unsub1()
-			unsub2()
+			unsubAdd()
+			unsubDelete()
 		}
 	}, [chatId])
 
