@@ -38,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	)
 		throw new Error('cannot create message')
 
-	await createMessage({
+	const newMessage = await createMessage({
 		text: formData.text,
 		chatId: formData.chatId,
 		userId: formData.userId,
@@ -47,7 +47,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		replyToMessageId: formData.replyToMessageId,
 	})
 
-	return { ok: true }
+	return { message: newMessage }
 }
 
 export async function deleteMessageAction({ request }: ActionFunctionArgs) {

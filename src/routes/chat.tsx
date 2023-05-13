@@ -3,8 +3,22 @@ import Message from '@components/Message'
 import { Divider, ScrollArea, Stack, Text, createStyles } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { IChat, IMessage, IMessageToReplyClient } from '@types'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useLoaderData, useParams } from 'react-router-dom'
+
+const messageObserver = {
+	subs: [] as Array<(message: IMessage) => void>,
+	subscribe: function(sub: (message: IMessage) => void) {
+		this.subs.push(sub)
+
+		return () => {
+			this.subs = this.subs.filter(item => item !== sub)
+		}
+	},
+	addMessage: function(message: IMessage) {
+		this.subs.forEach(sub => sub(message))
+	},
+}
 
 const useStyles = createStyles(theme => ({
 	wrapper: {
@@ -24,10 +38,11 @@ const useStyles = createStyles(theme => ({
 
 export default function Chat() {
 	const { chatId } = useParams<{ chatId: string }>()
-	const { messages } = useLoaderData() as {
+	const { messages: loaderMessages } = useLoaderData() as {
 		chat: IChat
 		messages: IMessage[]
 	}
+	const [messages, setMessages] = useState<IMessage[]>(loaderMessages)
 	const { classes } = useStyles()
 	const [messageToReply, setMessageToReply] =
 		useState<IMessageToReplyClient | null>(null)
@@ -63,11 +78,36 @@ export default function Chat() {
 		return messagesByDate
 	}, [messages])
 
+	const addMessage = useCallback(
+		(message: IMessage) => messageObserver.addMessage(message),
+		[]
+	)
+
 	useEffect(() => {
 		scrollIntoView({
 			alignment: 'end',
 		})
-	}, [scrollIntoView, chatId, messagesByDate])
+	}, [scrollIntoView, chatId, loaderMessages, messagesByDate])
+
+	useEffect(() => {
+		setMessages(loaderMessages)
+	}, [loaderMessages])
+
+	useEffect(() => {
+		const bc = new BroadcastChannel(chatId as string)
+		const unsub = messageObserver.subscribe(data => {
+			bc.postMessage(data)
+		})
+
+		bc.onmessage = (event: MessageEvent<IMessage>) => {
+			setMessages(prev => [...prev, event.data])
+		}
+
+		return () => {
+			bc.close()
+			unsub()
+		}
+	}, [chatId])
 
 	return (
 		<div className={classes.wrapper}>
@@ -122,6 +162,7 @@ export default function Chat() {
 			<ChatInput
 				messageToReply={messageToReply}
 				onClearMessageToReply={() => setMessageToReply(null)}
+				addMessageCallback={addMessage}
 			/>
 		</div>
 	)

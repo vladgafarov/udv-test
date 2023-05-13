@@ -32,14 +32,17 @@ export async function createMessage(dto: ICreateMessageDto) {
 
 		if (!messageToReply) throw new Error('message not found')
 
-		return db.add('messages', {
+		const id = await db.add('messages', {
 			...data,
 			replyTo: messageToReply,
 			replyToMessageId: dto.replyToMessageId,
 		})
+
+		return db.get('messages', id)
 	}
 
-	return db.add('messages', data)
+	const id = await db.add('messages', data)
+	return db.get('messages', id)
 }
 
 export async function getMessagesFromChat(chatId: string) {

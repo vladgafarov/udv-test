@@ -11,7 +11,7 @@ import {
 	createStyles,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IMessageToReplyClient } from '@types'
+import { IMessage, IMessageToReplyClient } from '@types'
 import { useUser } from '@utils/useUser'
 import { useEffect, useRef, useState } from 'react'
 import { useFetcher, useParams } from 'react-router-dom'
@@ -46,11 +46,13 @@ const useStyles = createStyles(theme => ({
 interface IProps {
 	messageToReply: IMessageToReplyClient | null
 	onClearMessageToReply: () => void
+	addMessageCallback: (message: IMessage) => void
 }
 
 export default function ChatInput({
 	messageToReply,
 	onClearMessageToReply,
+	addMessageCallback,
 }: IProps) {
 	const { classes } = useStyles()
 	const { chatId } = useParams()
@@ -89,6 +91,9 @@ export default function ChatInput({
 			clearFile()
 			setMedia('')
 			onClearMessageToReply()
+			if (fetcher.data?.message) {
+				addMessageCallback(fetcher.data.message)
+			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fetcher.state])
