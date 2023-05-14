@@ -189,6 +189,7 @@ export default function Chat() {
 				</Stack>
 			</ScrollArea>
 			<ChatInput
+				key={chatId}
 				messageToReply={messageToReply}
 				onClearMessageToReply={() => setMessageToReply(null)}
 				addMessageCallback={addMessage}
